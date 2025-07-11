@@ -60,34 +60,24 @@ ListNode* process(ListNode* l1, ListNode* l2) {
 	bool carry = false;
 	int sum = 0;
 	while( it1 && it2) {
-		sum = it1->val + it2->val;
-		if(carry) {
-			sum++;
-			carry = false;
-		};
-		if(sum >=10) {
-			carry = true;
-			sum %= 10;
-		};
+		sum = carry ? it1->val + it2->val + 1 : it1->val + it2->val;
+		carry = sum >= 10;
+		sum %= 10;
 		append(result, tail, sum);
 		it1 = it1->next;
 		it2 = it2->next;
 	}
 	while(it1) {
-		sum = (carry) ? it1->val + 1 : it1->val;
-		if(sum >= 10) {
-			sum %= 10;
-			carry = true;
-		} else carry = false;
+		sum = carry ? it1->val + 1 : it1->val;
+		carry = sum >= 10;
+		sum %= 10;
 		append(result, tail, sum);
 		it1 = it1->next;
 	}
 	while(it2) {
-		sum = (carry) ? it2->val + 1 : it2->val;
-		if(sum >= 10) {
-			sum %= 10;
-			carry = true;
-		} else carry = false;
+		sum = carry ? it2->val + 1 : it2->val;
+		carry = sum >= 10;
+		sum %= 10;
 		append(result, tail, sum);
 		it2 = it2->next;
 	}
