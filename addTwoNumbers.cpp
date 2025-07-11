@@ -40,49 +40,63 @@ void printLL(ListNode* ll) {
 	cout << endl;
 }
 
-int parse(ListNode* lst) {
-	ListNode* it = lst;
-	int num = 0;
-	int i = 0;
-	while(it != NULL) {
-		num += it->val * pow(10,i);
-		i++;
-		it = it->next;
+void append(ListNode*& lst, ListNode*& tail, int val) {
+	if(!lst) {
+		lst = new ListNode(val);
+		tail = lst;
 	}
-	return num;
+	else {
+		ListNode* curr = new ListNode(val);
+		tail->next = curr;
+		tail = curr;
+	}
 }
 
-ListNode* unParse(int n) {
-	ListNode* head = NULL;
+ListNode* process(ListNode* l1, ListNode* l2) {
+	ListNode* result = NULL;
 	ListNode* tail;
-	ListNode* curr;
-
-	int remainder = 0;
-	if(n == 0) return new ListNode(n);
-	while(n > 0) {
-		remainder = n % 10;
-		n = (n-remainder)/10;
-
-		if(!head) {
-			head = new ListNode(remainder);
-			tail = head;
-		} else {
-			curr = new ListNode(remainder);
-			tail->next = curr;
-			tail = curr;
-		}
+	ListNode* it1 = l1;
+	ListNode* it2 = l2;
+	bool carry = false;
+	int sum = 0;
+	while( it1 && it2) {
+		sum = it1->val + it2->val;
+		if(carry) {
+			sum++;
+			carry = false;
+		};
+		if(sum >=10) {
+			carry = true;
+			sum %= 10;
+		};
+		append(result, tail, sum);
+		it1 = it1->next;
+		it2 = it2->next;
 	}
-
-	return head;
+	while(it1) {
+		sum = (carry) ? it1->val + 1 : it1->val;
+		if(sum >= 10) {
+			sum %= 10;
+			carry = true;
+		} else carry = false;
+		append(result, tail, sum);
+		it1 = it1->next;
+	}
+	while(it2) {
+		sum = (carry) ? it2->val + 1 : it2->val;
+		if(sum >= 10) {
+			sum %= 10;
+			carry = true;
+		} else carry = false;
+		append(result, tail, sum);
+		it2 = it2->next;
+	}
+	if(carry) append(result, tail, carry);
+	return result;
 }
 
 ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-	int num1 = 0, num2 = 0;
-	num1 = parse(l1);
-	num2 = parse(l2);
-	cout << "num1 + num2 = " << num1 + num2 << endl;
-	return NULL;
-	return unParse(num1 + num2);
+	return process(l1, l2);
 }
 
 void tc1() {
@@ -93,7 +107,6 @@ void tc1() {
 	int n2 = 3;
 	int arr2[] = {5, 6, 4};
 	ListNode* l2 = createLL(arr2, n2);
-
 	printLL(addTwoNumbers(l1, l2));
 }
 
@@ -132,16 +145,14 @@ void tc4() {
 
 	printLL(l1);
 	printLL(l2);
-	addTwoNumbers(l1, l2);
-
-	// printLL(addTwoNumbers(l1, l2));
+	printLL(addTwoNumbers(l1, l2));
 }
 
 int main() {
 	cout << "Sum 2 numbers" << endl;
-	// tc1();
+	tc1();
 	// tc2();
 	// tc3();
-	tc4();	// Overflow happens
+	// tc4();
 	return 0;
 }
